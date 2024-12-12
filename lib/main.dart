@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:udhari/controllers/database_provider.dart';
+import 'package:udhari/models/database_helper.dart';
+import 'package:udhari/views/homepage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) =>
+        DatabaseProvider(databaseHelper: DatabaseHelper.getInstance),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Homepage(),
+      home: const Homepage(),
     );
   }
 }
