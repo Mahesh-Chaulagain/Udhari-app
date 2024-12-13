@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:udhari/controllers/database_provider.dart';
 import 'package:udhari/views/add_customer_page.dart';
 import 'package:udhari/views/search_result.dart';
 import 'package:udhari/views/view_all_records.dart';
@@ -40,7 +38,7 @@ class Homepage extends StatelessWidget {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20))),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextField(
@@ -50,7 +48,7 @@ class Homepage extends StatelessWidget {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20))),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton(
@@ -67,7 +65,7 @@ class Homepage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Search'),
+              child: const Text('Search'),
             ),
           ],
         ),

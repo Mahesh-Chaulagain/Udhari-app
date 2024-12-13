@@ -56,4 +56,32 @@ class DatabaseProvider extends ChangeNotifier {
     // Notify listeners after the search results are updated
     notifyListeners();
   }
+
+  // Update Record
+  void updateRecord(String name, String location, double amount, int crate,
+      int page, int sno) async {
+    bool check = await databaseHelper.updateData(
+        name: name,
+        location: location,
+        amount: amount,
+        crate: crate,
+        page: page,
+        sno: sno);
+
+    if (check) {
+      // Refresh the list of records in memory
+      _cData = await databaseHelper.getAllData();
+
+      // If you're currently performing a search, update the search results as well
+      if (_searchResults.isNotEmpty) {
+        _searchResults = _cData
+            .where((record) =>
+                (record['name'] == name || record['location'] == location))
+            .toList();
+      }
+
+      // Notify listeners after updating in-memory data
+      notifyListeners();
+    }
+  }
 }

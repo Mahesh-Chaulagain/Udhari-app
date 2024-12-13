@@ -33,8 +33,8 @@ class _ViewAllRecordsState extends State<ViewAllRecords> {
                 itemCount: allRecords.length,
                 itemBuilder: (_, index) {
                   return Container(
-                    margin: EdgeInsets.all(20),
-                    padding: EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                         border: Border.all(
                       width: 1,
@@ -44,23 +44,23 @@ class _ViewAllRecordsState extends State<ViewAllRecords> {
                         children: [
                           Text(
                             'Name: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_NAME]}',
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                           ),
                           Text(
                             'Location: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_LOCATION]}',
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                           ),
                           Text(
                             'Amount: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_AMOUNT].toString()}',
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                           ),
                           Text(
                             'Crate: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_CRATE].toString()}',
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                           ),
                           Text(
                             'Page: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_PAGE].toString()}',
-                            style: TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 20),
                           ),
                         ]),
                   );
