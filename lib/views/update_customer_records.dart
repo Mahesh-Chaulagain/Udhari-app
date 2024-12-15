@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Added this import for date formatting
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:udhari/controllers/database_provider.dart';
 
 class UpdateCustomerRecords extends StatefulWidget {
   final int sno;
-  final double previousAmount;
+  final int previousAmount;
   final int previousCrate;
   final String? name;
   final String? location;
@@ -28,18 +28,24 @@ class UpdateCustomerRecords extends StatefulWidget {
 }
 
 class _UpdateCustomerRecordsState extends State<UpdateCustomerRecords> {
+  late TextEditingController dateController;
+  final TextEditingController billAmountController = TextEditingController();
+  final TextEditingController billCrateController = TextEditingController();
+  final TextEditingController rashidAmountController = TextEditingController();
+  final TextEditingController rashidCrateController = TextEditingController();
+  final TextEditingController newPageController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the dateController with today's date
+    dateController = TextEditingController(
+        text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
+    newPageController.text = widget.page?.toString() ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController dateController =
-        TextEditingController(text: DateTime.now().toString().split(' ')[0]);
-    final TextEditingController billAmountController = TextEditingController();
-    final TextEditingController billCrateController = TextEditingController();
-    final TextEditingController rashidAmountController =
-        TextEditingController();
-    final TextEditingController rashidCrateController = TextEditingController();
-    final TextEditingController newPageController =
-        TextEditingController(text: widget.page?.toString() ?? '');
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Update Customer Data'),
@@ -55,32 +61,34 @@ class _UpdateCustomerRecordsState extends State<UpdateCustomerRecords> {
                 children: [
                   Expanded(
                     child: TextField(
-                        controller: dateController,
-                        keyboardType: TextInputType.datetime,
-                        decoration: InputDecoration(
-                          labelText: 'Date',
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11),
-                          ),
+                      controller: dateController,
+                      keyboardType: TextInputType.datetime,
+                      decoration: InputDecoration(
+                        labelText: 'Date',
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(11),
                         ),
-                        onTap: () async {
-                          // Date picker dialog for better date input
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2101),
-                          );
-                          if (pickedDate != null) {
-                            setState(() {
-                              dateController.text =
-                                  pickedDate.toLocal().toString().split(' ')[0];
-                            });
-                          }
-                        }),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(11),
+                        ),
+                      ),
+                      onTap: () async {
+                        // Date picker dialog for better date input
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
+                        );
+                        if (pickedDate != null) {
+                          setState(() {
+                            // Format the selected date in 'yyyy-MM-dd' format using the intl package
+                            dateController.text =
+                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                          });
+                        }
+                      },
+                    ),
                   ),
                   const SizedBox(
                     width: 10,
@@ -187,8 +195,7 @@ class _UpdateCustomerRecordsState extends State<UpdateCustomerRecords> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  double billAmount =
-                      double.tryParse(billAmountController.text) ?? 0;
+                  int billAmount = int.tryParse(billAmountController.text) ?? 0;
                   int billCrate = int.tryParse(billCrateController.text) ?? 0;
                   int rashidAmount =
                       int.tryParse(rashidAmountController.text) ?? 0;
@@ -196,7 +203,7 @@ class _UpdateCustomerRecordsState extends State<UpdateCustomerRecords> {
                       int.tryParse(rashidCrateController.text) ?? 0;
                   int newPage = int.tryParse(newPageController.text) ?? 0;
 
-                  double updatedAmount = widget.previousAmount +
+                  int updatedAmount = widget.previousAmount +
                       billAmount -
                       rashidAmount -
                       rashidCrate * 300;
@@ -211,24 +218,19 @@ class _UpdateCustomerRecordsState extends State<UpdateCustomerRecords> {
                   // Build the history string
                   StringBuffer historyBuffer = StringBuffer();
 
-                  // if previous amount is non-zero, add it to the history
-                  if (widget.previousAmount != 0) {
-                    historyBuffer.write('+${widget.previousAmount}');
-                  }
-
                   // if billAmount is non-zero, add it to the history with the current date
                   if (billAmount != 0) {
-                    historyBuffer.write('($currentDate) +$billAmount)');
+                    historyBuffer.write('($currentDate) +$billAmount');
                   }
 
                   // if rashidAmount is non-zero, subtract it to the history with the current date
                   if (rashidAmount != 0) {
-                    historyBuffer.write('($currentDate) -$rashidAmount)');
+                    historyBuffer.write('($currentDate) -$rashidAmount');
                   }
 
                   // if rashidCrate is non-zero, subtract it to the history with the current date
                   if (rashidCrate != 0) {
-                    historyBuffer.write('($currentDate) -$rashidCrate * 300)');
+                    historyBuffer.write('($currentDate) -$rashidCrate * 300');
                   }
 
                   // final history string
@@ -236,7 +238,7 @@ class _UpdateCustomerRecordsState extends State<UpdateCustomerRecords> {
 
                   // Check if the updated amount results in zero
                   String finalHistory = '';
-                  if (updatedAmount != 0) {
+                  if (updatedHistory.isNotEmpty) {
                     finalHistory =
                         (widget.previousHistory ?? '') + ' ' + updatedHistory;
                   }

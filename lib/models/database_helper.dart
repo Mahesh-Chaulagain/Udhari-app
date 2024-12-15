@@ -38,7 +38,7 @@ class DatabaseHelper {
         $COLUMN_CUSTOMER_SNO INTEGER PRIMARY KEY AUTOINCREMENT,
         $COLUMN_CUSTOMER_NAME TEXT,
         $COLUMN_CUSTOMER_LOCATION TEXT,
-        $COLUMN_CUSTOMER_AMOUNT REAL,
+        $COLUMN_CUSTOMER_AMOUNT INTEGER,
         $COLUMN_CUSTOMER_CRATE INTEGER,
         $COLUMN_CUSTOMER_PAGE INTEGER,
         $COLUMN_CUSTOMER_HISTORY TEXT)
@@ -50,7 +50,7 @@ class DatabaseHelper {
   Future<bool> addData(
       {required String name,
       String? location,
-      double? amount,
+      int? amount,
       int? crate,
       int? page,
       String? history}) async {
@@ -77,15 +77,15 @@ class DatabaseHelper {
   Future<bool> updateData(
       {String? name,
       String? location,
-      double? amount,
+      int? amount,
       int? crate,
       int? page,
       String? previousHistory,
       required int sno}) async {
     var db = await getDB();
     String updatedHistory = previousHistory ?? '';
-    updatedHistory +=
-        ' Updated on ${DateTime.now()}'; // Appending the new history
+    // updatedHistory +=
+    //     ' Updated on ${DateTime.now()}'; // Appending the new history
 
     int rowEffected = await db.update(
         TABLE_CUSTOMER,
@@ -134,5 +134,23 @@ class DatabaseHelper {
           '$COLUMN_CUSTOMER_NAME LIKE ? AND $COLUMN_CUSTOMER_LOCATION LIKE ?',
       whereArgs: ['%$name%', '%$location%'],
     );
+  }
+}
+
+// delete the whole database
+Future<void> deleteOldDatabase() async {
+  try {
+    // Get the application documents directory path
+    Directory appDir = await getApplicationDocumentsDirectory();
+
+    // Set the database path using the same name as your database
+    String dbPath = join(appDir.path, "customer.db");
+
+    // Delete the database file
+    await deleteDatabase(dbPath);
+
+    print("Database deleted successfully.");
+  } catch (e) {
+    print("Error deleting database: $e");
   }
 }

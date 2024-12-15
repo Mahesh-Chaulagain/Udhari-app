@@ -9,8 +9,8 @@ class DatabaseProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _searchResults = [];
 
   // Add records
-  void addRecord(String name, String location, double amount, int crate,
-      int page, String history) async {
+  void addRecord(String name, String location, int amount, int crate, int page,
+      String history) async {
     bool check = await databaseHelper.addData(
         name: name,
         location: location,
@@ -52,7 +52,7 @@ class DatabaseProvider extends ChangeNotifier {
     }
     // If neither is provided
     else {
-      _searchResults = [];
+      _searchResults = await DatabaseHelper.getInstance.getAllData();
     }
 
     // Notify listeners after the search results are updated
@@ -63,7 +63,7 @@ class DatabaseProvider extends ChangeNotifier {
   void updateRecord(
     String name,
     String location,
-    double amount,
+    int amount,
     int crate,
     int page,
     int sno,

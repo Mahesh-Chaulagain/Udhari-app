@@ -68,13 +68,17 @@ class Homepage extends StatelessWidget {
               },
               child: const Text('Search'),
             ),
+            const SizedBox(
+              height: 20,
+            ),
             // ElevatedButton(
             //   onPressed: () {
             //     deleteOldDatabase();
             //     // Optionally, reload the app or navigate to a fresh screen
             //   },
             //   child: Text('Reset Database'),
-            // )
+            // ),
+            Expanded(child: ViewAllRecords()),
           ],
         ),
       ),

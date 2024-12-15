@@ -8,7 +8,7 @@ class AddCustomerPage extends StatefulWidget {
   int sno;
   String? name;
   String? location;
-  double? amount;
+  int? amount;
   int? crate;
   int? page;
   String? previousHistory; // Add previousHistory field
@@ -19,7 +19,7 @@ class AddCustomerPage extends StatefulWidget {
     this.sno = 0,
     this.name = "",
     this.location = "",
-    this.amount = 0.0,
+    this.amount = 0,
     this.crate = 0,
     this.page = 0,
     this.previousHistory = "", // Default to an empty string
@@ -156,20 +156,16 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                       onPressed: () async {
                         var name = nameController.text;
                         var location = locationController.text;
-                        var amount =
-                            double.tryParse(amountController.text) ?? 0.0;
+                        var amount = int.tryParse(amountController.text) ?? 0;
                         var crate = int.tryParse(crateController.text) ?? 0;
                         var page = int.tryParse(pageController.text) ?? 0;
-                        var newHistory =
-                            'Updated record on ${DateTime.now()}'; // Create new history log
+                        // var newHistory =
+                        //     'Updated record on ${DateTime.now().toString()}';
 
                         if (name.isNotEmpty && location.isNotEmpty) {
                           if (widget.isUpdate) {
                             // Update the record, appending new history
-                            String updatedHistory =
-                                (widget.previousHistory ?? '') +
-                                    ' ' +
-                                    newHistory;
+                            String updatedHistory = '+$amount';
                             context.read<DatabaseProvider>().updateRecord(
                                 name,
                                 location,
@@ -177,15 +173,18 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                                 crate,
                                 page,
                                 widget.sno,
-                                updatedHistory); // Pass updated history
+                                updatedHistory);
+
+                            // show snackbar on success
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Record Updated Successfully')));
                           } else {
-                            context.read<DatabaseProvider>().addRecord(
-                                name,
-                                location,
-                                amount,
-                                crate,
-                                page,
-                                newHistory); // Add new record with history
+                            String newHistory = '+$amount';
+                            context.read<DatabaseProvider>().addRecord(name,
+                                location, amount, crate, page, newHistory);
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Record Added Successfully')));
                           }
                         }
                         // Clear fields after saving
@@ -195,7 +194,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                         crateController.clear();
                         pageController.clear();
 
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       },
                       child: Text(widget.isUpdate ? "Update" : "Save"),
                     ),
