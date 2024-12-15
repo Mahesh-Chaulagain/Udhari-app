@@ -1,3 +1,6 @@
+// dbhelper.dart
+// ignore_for_file: constant_identifier_names
+
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -15,6 +18,7 @@ class DatabaseHelper {
   static const String COLUMN_CUSTOMER_AMOUNT = 'amount';
   static const String COLUMN_CUSTOMER_CRATE = 'crate';
   static const String COLUMN_CUSTOMER_PAGE = 'page';
+  static const String COLUMN_CUSTOMER_HISTORY = 'history';
 
   Database? myDB;
 
@@ -36,7 +40,8 @@ class DatabaseHelper {
         $COLUMN_CUSTOMER_LOCATION TEXT,
         $COLUMN_CUSTOMER_AMOUNT REAL,
         $COLUMN_CUSTOMER_CRATE INTEGER,
-        $COLUMN_CUSTOMER_PAGE INTEGER)
+        $COLUMN_CUSTOMER_PAGE INTEGER,
+        $COLUMN_CUSTOMER_HISTORY TEXT)
         """);
     });
   }
@@ -47,7 +52,8 @@ class DatabaseHelper {
       String? location,
       double? amount,
       int? crate,
-      int? page}) async {
+      int? page,
+      String? history}) async {
     var db = await getDB();
     int rowsEffected = await db.insert(TABLE_CUSTOMER, {
       COLUMN_CUSTOMER_NAME: name,
@@ -55,6 +61,7 @@ class DatabaseHelper {
       COLUMN_CUSTOMER_AMOUNT: amount,
       COLUMN_CUSTOMER_CRATE: crate,
       COLUMN_CUSTOMER_PAGE: page,
+      COLUMN_CUSTOMER_HISTORY: history,
     });
     return rowsEffected > 0;
   }
@@ -73,8 +80,13 @@ class DatabaseHelper {
       double? amount,
       int? crate,
       int? page,
+      String? previousHistory,
       required int sno}) async {
     var db = await getDB();
+    String updatedHistory = previousHistory ?? '';
+    updatedHistory +=
+        ' Updated on ${DateTime.now()}'; // Appending the new history
+
     int rowEffected = await db.update(
         TABLE_CUSTOMER,
         {
@@ -83,6 +95,8 @@ class DatabaseHelper {
           COLUMN_CUSTOMER_AMOUNT: amount,
           COLUMN_CUSTOMER_CRATE: crate,
           COLUMN_CUSTOMER_PAGE: page,
+          COLUMN_CUSTOMER_HISTORY:
+              updatedHistory, // Update the history with the appended value
         },
         where: '$COLUMN_CUSTOMER_SNO = ?',
         whereArgs: [sno]);
@@ -90,7 +104,7 @@ class DatabaseHelper {
     return rowEffected > 0;
   }
 
-  // method for searching by name
+  // Method for searching by name
   Future<List<Map<String, dynamic>>> searchByName(String name) async {
     final db = await getDB();
     return await db.query(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:udhari/views/add_customer_page.dart';
 import 'package:udhari/views/search_result.dart';
 import 'package:udhari/views/view_all_records.dart';
+import 'package:udhari/models/database_helper.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
@@ -67,6 +68,13 @@ class Homepage extends StatelessWidget {
               },
               child: const Text('Search'),
             ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     deleteOldDatabase();
+            //     // Optionally, reload the app or navigate to a fresh screen
+            //   },
+            //   child: Text('Reset Database'),
+            // )
           ],
         ),
       ),

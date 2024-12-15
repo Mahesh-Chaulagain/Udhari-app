@@ -1,3 +1,4 @@
+// AddCustomerPage.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:udhari/controllers/database_provider.dart';
@@ -10,6 +11,7 @@ class AddCustomerPage extends StatefulWidget {
   double? amount;
   int? crate;
   int? page;
+  String? previousHistory; // Add previousHistory field
 
   AddCustomerPage({
     super.key,
@@ -19,7 +21,8 @@ class AddCustomerPage extends StatefulWidget {
     this.location = "",
     this.amount = 0.0,
     this.crate = 0,
-    this.page = -0,
+    this.page = 0,
+    this.previousHistory = "", // Default to an empty string
   });
 
   @override
@@ -28,17 +31,14 @@ class AddCustomerPage extends StatefulWidget {
 
 class _AddCustomerPageState extends State<AddCustomerPage> {
   TextEditingController nameController = TextEditingController();
-
   TextEditingController locationController = TextEditingController();
-
   TextEditingController amountController = TextEditingController();
-
   TextEditingController crateController = TextEditingController();
-
   TextEditingController pageController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     if (widget.isUpdate) {
       // Initialize controllers with existing data if in update mode
       nameController = TextEditingController(text: widget.name ?? '');
@@ -50,20 +50,22 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
       pageController =
           TextEditingController(text: widget.page?.toString() ?? '');
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.isUpdate ? 'Update Record' : 'Add Record'),
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(25),
+          margin: const EdgeInsets.all(25),
           padding: const EdgeInsets.all(10),
           width: double.infinity,
           child: Column(
             children: [
-              const SizedBox(
-                height: 21,
-              ),
+              const SizedBox(height: 21),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
@@ -76,9 +78,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               TextField(
                 controller: locationController,
                 decoration: InputDecoration(
@@ -91,16 +91,12 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Flex(
                 direction: Axis.horizontal,
                 children: [
-                  // Amount field takes half the space
                   Expanded(
-                    flex:
-                        2, // This will make 'amount' take up 2 parts of the space
+                    flex: 2,
                     child: TextField(
                       controller: amountController,
                       keyboardType: TextInputType.number,
@@ -115,10 +111,9 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10), // Optional spacing between fields
-                  // Crate field takes 1 part of the space
+                  const SizedBox(width: 10),
                   Expanded(
-                    flex: 1, // 'crate' takes up 1 part of the space
+                    flex: 1,
                     child: TextField(
                       controller: crateController,
                       keyboardType: TextInputType.number,
@@ -133,10 +128,9 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10), // Optional spacing between fields
-                  // Page field also takes 1 part of the space
+                  const SizedBox(width: 10),
                   Expanded(
-                    flex: 1, // 'page' also takes 1 part of the space
+                    flex: 1,
                     child: TextField(
                       controller: pageController,
                       keyboardType: TextInputType.number,
@@ -153,9 +147,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -168,15 +160,32 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                             double.tryParse(amountController.text) ?? 0.0;
                         var crate = int.tryParse(crateController.text) ?? 0;
                         var page = int.tryParse(pageController.text) ?? 0;
+                        var newHistory =
+                            'Updated record on ${DateTime.now()}'; // Create new history log
 
                         if (name.isNotEmpty && location.isNotEmpty) {
                           if (widget.isUpdate) {
-                            context.read<DatabaseProvider>().updateRecord(name,
-                                location, amount, crate, page, widget.sno);
+                            // Update the record, appending new history
+                            String updatedHistory =
+                                (widget.previousHistory ?? '') +
+                                    ' ' +
+                                    newHistory;
+                            context.read<DatabaseProvider>().updateRecord(
+                                name,
+                                location,
+                                amount,
+                                crate,
+                                page,
+                                widget.sno,
+                                updatedHistory); // Pass updated history
                           } else {
-                            context
-                                .read<DatabaseProvider>()
-                                .addRecord(name, location, amount, crate, page);
+                            context.read<DatabaseProvider>().addRecord(
+                                name,
+                                location,
+                                amount,
+                                crate,
+                                page,
+                                newHistory); // Add new record with history
                           }
                         }
                         // Clear fields after saving
@@ -191,9 +200,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                       child: Text(widget.isUpdate ? "Update" : "Save"),
                     ),
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
@@ -203,7 +210,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

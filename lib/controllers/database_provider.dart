@@ -1,3 +1,4 @@
+// dbprovider.dart
 import 'package:flutter/material.dart';
 import 'package:udhari/models/database_helper.dart';
 
@@ -7,15 +8,16 @@ class DatabaseProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _cData = [];
   List<Map<String, dynamic>> _searchResults = [];
 
-  // add records
-  void addRecord(
-      String name, String location, double amount, int crate, int page) async {
+  // Add records
+  void addRecord(String name, String location, double amount, int crate,
+      int page, String history) async {
     bool check = await databaseHelper.addData(
         name: name,
         location: location,
         amount: amount,
         crate: crate,
-        page: page);
+        page: page,
+        history: history);
 
     if (check) {
       _cData = await databaseHelper.getAllData();
@@ -23,7 +25,7 @@ class DatabaseProvider extends ChangeNotifier {
     }
   }
 
-  // get all records
+  // Get all records
   List<Map<String, dynamic>> getRecords() => _cData;
 
   void getInitialRecords() async {
@@ -58,15 +60,24 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   // Update Record
-  void updateRecord(String name, String location, double amount, int crate,
-      int page, int sno) async {
+  void updateRecord(
+    String name,
+    String location,
+    double amount,
+    int crate,
+    int page,
+    int sno,
+    String history,
+  ) async {
     bool check = await databaseHelper.updateData(
-        name: name,
-        location: location,
-        amount: amount,
-        crate: crate,
-        page: page,
-        sno: sno);
+      name: name,
+      location: location,
+      amount: amount,
+      crate: crate,
+      page: page,
+      sno: sno,
+      previousHistory: history,
+    );
 
     if (check) {
       // Refresh the list of records in memory
