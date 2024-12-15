@@ -203,57 +203,74 @@ class _UpdateCustomerRecordsState extends State<UpdateCustomerRecords> {
                       int.tryParse(rashidCrateController.text) ?? 0;
                   int newPage = int.tryParse(newPageController.text) ?? 0;
 
-                  int updatedAmount = widget.previousAmount +
-                      billAmount -
-                      rashidAmount -
-                      rashidCrate * 300;
+                  if (rashidAmount > widget.previousAmount) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text('Rashid amount greater than total amount'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else if (rashidCrate > widget.previousAmount) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Rashid crate greater than total crate'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    int updatedAmount = widget.previousAmount +
+                        billAmount -
+                        rashidAmount -
+                        rashidCrate * 300;
 
-                  int updatedCrate =
-                      widget.previousCrate + billCrate - rashidCrate;
+                    int updatedCrate =
+                        widget.previousCrate + billCrate - rashidCrate;
 
-                  // Use the intl package for proper date formatting
-                  String currentDate =
-                      DateFormat('MM-dd').format(DateTime.now());
+                    // Use the intl package for proper date formatting
+                    String currentDate =
+                        DateFormat('MM-dd').format(DateTime.now());
 
-                  // Build the history string
-                  StringBuffer historyBuffer = StringBuffer();
+                    // Build the history string
+                    StringBuffer historyBuffer = StringBuffer();
 
-                  // if billAmount is non-zero, add it to the history with the current date
-                  if (billAmount != 0) {
-                    historyBuffer.write('($currentDate) +$billAmount');
+                    // if billAmount is non-zero, add it to the history with the current date
+                    if (billAmount != 0) {
+                      historyBuffer.write('($currentDate) +$billAmount');
+                    }
+
+                    // if rashidAmount is non-zero, subtract it to the history with the current date
+                    if (rashidAmount != 0) {
+                      historyBuffer.write('($currentDate) -$rashidAmount');
+                    }
+
+                    // if rashidCrate is non-zero, subtract it to the history with the current date
+                    if (rashidCrate != 0) {
+                      historyBuffer.write('($currentDate) -$rashidCrate * 300');
+                    }
+
+                    // final history string
+                    String updatedHistory = historyBuffer.toString().trim();
+
+                    // Check if the updated amount results in zero
+                    String finalHistory = '';
+                    if (updatedHistory.isNotEmpty) {
+                      finalHistory =
+                          (widget.previousHistory ?? '') + ' ' + updatedHistory;
+                    }
+
+                    // Update database with the new values
+                    context.read<DatabaseProvider>().updateRecord(
+                        widget.name!,
+                        widget.location!,
+                        updatedAmount,
+                        updatedCrate,
+                        newPage,
+                        widget.sno,
+                        finalHistory);
+
+                    Navigator.pop(context, true);
                   }
-
-                  // if rashidAmount is non-zero, subtract it to the history with the current date
-                  if (rashidAmount != 0) {
-                    historyBuffer.write('($currentDate) -$rashidAmount');
-                  }
-
-                  // if rashidCrate is non-zero, subtract it to the history with the current date
-                  if (rashidCrate != 0) {
-                    historyBuffer.write('($currentDate) -$rashidCrate * 300');
-                  }
-
-                  // final history string
-                  String updatedHistory = historyBuffer.toString().trim();
-
-                  // Check if the updated amount results in zero
-                  String finalHistory = '';
-                  if (updatedHistory.isNotEmpty) {
-                    finalHistory =
-                        (widget.previousHistory ?? '') + ' ' + updatedHistory;
-                  }
-
-                  // Update database with the new values
-                  context.read<DatabaseProvider>().updateRecord(
-                      widget.name!,
-                      widget.location!,
-                      updatedAmount,
-                      updatedCrate,
-                      newPage,
-                      widget.sno,
-                      finalHistory);
-
-                  Navigator.pop(context, true);
                 },
                 child: const Text('Update Data'),
               )

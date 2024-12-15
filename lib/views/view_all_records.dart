@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:udhari/controllers/database_provider.dart';
 import 'package:udhari/models/database_helper.dart';
+import 'package:udhari/widgets/update_buttons.dart';
 
 class ViewAllRecords extends StatefulWidget {
   const ViewAllRecords({super.key});
@@ -40,29 +41,34 @@ class _ViewAllRecordsState extends State<ViewAllRecords> {
                       width: 1,
                     )),
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Name: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_NAME]}',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            'Location: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_LOCATION]}',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            'Amount: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_AMOUNT].toString()}',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            'Crate: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_CRATE].toString()}',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            'Page: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_PAGE].toString()}',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                        ]),
+                      children: [
+                        UpdateButtons(allRecords: allRecords, index: index),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Name: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_NAME]}',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                'Location: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_LOCATION]}',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                'Amount: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_AMOUNT].toString()}',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                'Crate: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_CRATE].toString()}',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                'Page: ${allRecords[index][DatabaseHelper.COLUMN_CUSTOMER_PAGE].toString()}',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ]),
+                      ],
+                    ),
                   );
                 })
             : const Center(

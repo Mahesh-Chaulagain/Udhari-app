@@ -177,14 +177,18 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
 
                             // show snackbar on success
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text('Record Updated Successfully')));
+                              content: Text('Record Updated Successfully'),
+                              backgroundColor: Colors.green,
+                            ));
                           } else {
                             String newHistory = '+$amount';
                             context.read<DatabaseProvider>().addRecord(name,
                                 location, amount, crate, page, newHistory);
 
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text('Record Added Successfully')));
+                              content: Text('Record Added Successfully'),
+                              backgroundColor: Colors.green,
+                            ));
                           }
                         }
                         // Clear fields after saving

@@ -44,120 +44,121 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               itemBuilder: (context, index) {
                 var record = results[index];
                 return ListTile(
-                    title: Text(
-                        "${record['name'] ?? 'No Name'} - ${record['location'] ?? 'No Location'}"),
-                    subtitle: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Text('Amount: ${record['amount'] ?? 0}'),
-                          Text('Crate: ${record['crate'] ?? 0}'),
-                          Text('Page: ${record['page'] ?? 0}')
-                        ],
-                      ),
+                  title: Text(
+                      "${record['name'] ?? 'No Name'} - ${record['location'] ?? 'No Location'}"),
+                  subtitle: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Text('Amount: ${record['amount'] ?? 0}'),
+                        Text('Crate: ${record['crate'] ?? 0}'),
+                        Text('Page: ${record['page'] ?? 0}')
+                      ],
                     ),
-                    trailing: SizedBox(
-                      width: 90, // Adjust width if needed
-                      height: 80, // Adjust height if needed
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Edit Button
-                          GestureDetector(
-                            onTap: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddCustomerPage(
-                                    isUpdate: true,
-                                    name: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_NAME],
-                                    location: results[index][DatabaseHelper
-                                        .COLUMN_CUSTOMER_LOCATION],
-                                    amount: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_AMOUNT],
-                                    crate: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_CRATE],
-                                    page: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_PAGE],
-                                    sno: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_SNO],
-                                  ),
+                  ),
+                  trailing: SizedBox(
+                    width: 90, // Adjust width if needed
+                    height: 80, // Adjust height if needed
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Edit Button
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddCustomerPage(
+                                  isUpdate: true,
+                                  name: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_NAME],
+                                  location: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_LOCATION],
+                                  amount: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_AMOUNT],
+                                  crate: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_CRATE],
+                                  page: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_PAGE],
+                                  sno: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_SNO],
                                 ),
-                              );
-                              if (result == true) {
-                                _searchRecords();
-                              }
-                            },
-                            child: const Icon(
-                              Icons.edit,
-                              size: 30, // Make the icon size larger
-                              color: Colors.blue,
-                            ),
+                              ),
+                            );
+                            if (result == true) {
+                              _searchRecords();
+                            }
+                          },
+                          child: const Icon(
+                            Icons.edit,
+                            size: 30, // Make the icon size larger
+                            color: Colors.blue,
                           ),
-                          const SizedBox(height: 10),
+                        ),
+                        const SizedBox(height: 10),
 
-                          // Update Button
-                          GestureDetector(
-                            onTap: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => UpdateCustomerRecords(
-                                    sno: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_SNO],
-                                    previousAmount: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_AMOUNT],
-                                    previousCrate: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_CRATE],
-                                    name: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_NAME],
-                                    location: results[index][DatabaseHelper
-                                        .COLUMN_CUSTOMER_LOCATION],
-                                    page: results[index]
-                                        [DatabaseHelper.COLUMN_CUSTOMER_PAGE],
-                                    previousHistory: results[index][
-                                        DatabaseHelper.COLUMN_CUSTOMER_HISTORY],
-                                  ),
+                        // Update Button
+                        GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdateCustomerRecords(
+                                  sno: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_SNO],
+                                  previousAmount: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_AMOUNT],
+                                  previousCrate: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_CRATE],
+                                  name: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_NAME],
+                                  location: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_LOCATION],
+                                  page: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_PAGE],
+                                  previousHistory: results[index]
+                                      [DatabaseHelper.COLUMN_CUSTOMER_HISTORY],
                                 ),
-                              );
-                              if (result == true) {
-                                _searchRecords();
-                              }
-                            },
-                            child: const Icon(
-                              Icons.upgrade_rounded,
-                              size: 30, // Make the icon size larger
-                              color: Colors.orange,
-                            ),
+                              ),
+                            );
+                            if (result == true) {
+                              _searchRecords();
+                            }
+                          },
+                          child: const Icon(
+                            Icons.add_to_photos,
+                            size: 30, // Make the icon size larger
+                            color: Colors.orange,
                           ),
-                          const SizedBox(height: 10),
+                        ),
+                        const SizedBox(height: 10),
 
-                          // History Button
-                          GestureDetector(
-                            onTap: () {
-                              // Fetch the history for this customer
-                              var history = record['history'] ??
-                                  ''; // Make sure history is non-null
+                        // History Button
+                        GestureDetector(
+                          onTap: () {
+                            // Fetch the history for this customer
+                            var history = record['history'] ??
+                                ''; // Make sure history is non-null
 
-                              // Navigate to the HistoryPage with the history string
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      HistoryPage(history: history),
-                                ),
-                              );
-                            },
-                            child: const Icon(
-                              Icons.history,
-                              size: 30, // Make the icon size larger
-                              color: Colors.green,
-                            ),
+                            // Navigate to the HistoryPage with the history string
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    HistoryPage(history: history),
+                              ),
+                            );
+                          },
+                          child: const Icon(
+                            Icons.history,
+                            size: 30, // Make the icon size larger
+                            color: Colors.green,
                           ),
-                        ],
-                      ),
-                    ));
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               },
             )
           : const Center(
